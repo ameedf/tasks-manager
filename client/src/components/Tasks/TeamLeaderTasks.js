@@ -13,15 +13,18 @@ class TeamLeaderTasks extends Component {
 		const {tasks} = this.props;
 		if (tasks.length === 0) {
 			return (
-				<div className="alert alert-success" role="alert">
-					No tasks for the team... Time for 'HAPPY HOUR' !!
+				<div>
+					<div className="alert alert-success" role="alert">
+						No tasks for the team... Time for 'HAPPY HOUR' !!
+					</div>
+					<AddTask/>
 				</div>
 			);
 		}
 		return (
 			<div style={{width: "90%", margin: "auto"}}>
-				<Messages />
-				<AddTask />
+				<Messages/>
+				<AddTask/>
 				<table className="table table-striped">
 					<thead>
 					<tr>
@@ -48,7 +51,6 @@ class TeamLeaderTasks extends Component {
 const mapStateToProps = state => {
 	return {
 		tasks: state.tasks.list,
-		developers: state.users.developers,
 	}
 }
 

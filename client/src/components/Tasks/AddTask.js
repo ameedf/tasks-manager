@@ -24,7 +24,9 @@ class AddTask extends Component {
 				<form className="row" onSubmit={(event => this.handleAddTask(event))}>
 					<input type="text" className="col-6" ref={this.descriptionInput} id="description" placeholder="Enter task description"/>
 					<select className="col-4" id="usersCombo" ref={this.userSelect}>
-						{developers.map(d => (<option key={d.id} value={d.id}>{d.name}</option>))}
+						{developers.map(developer => (
+							<option key={developer.id} value={developer.id}>{developer.name}</option>))
+						}
 					</select>
 					<input type="submit" className="col-2 btn btn-primary" value="Add task"/>
 				</form>

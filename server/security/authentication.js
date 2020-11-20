@@ -5,6 +5,7 @@ const isAuthorized = (req, res, allowedRoles) => {
 		res.status(401).send({errors: ["Please login"]});
 		return false;
 	}
+
 	if (typeof allowedRoles === 'string') {
 		allowedRoles = [allowedRoles];
 	}

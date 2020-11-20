@@ -12,7 +12,7 @@ class Tasks extends Component {
 			return <Redirect to="/login"/>
 		}
 		return user.role === "DEVELOPER"
-			? <WebSocketContext.Provider value={new WebSocketsProvider()} >
+			? <WebSocketContext.Provider value={new WebSocketsProvider()}>
 				<DeveloperTasks/>
 			</WebSocketContext.Provider>
 			: <TeamLeaderTasks/>;

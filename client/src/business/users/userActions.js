@@ -29,6 +29,7 @@ export const register = (userName, password, role) => async dispatch => {
 	const result = await api.post("/users/register", {userName, password, role});
 	if (result.errors) {
 		console.log(result.errors);
+		// [err1, err2]
 		dispatch(MESSAGES.setMessages(result.errors));
 	} else {
 		dispatch(MESSAGES.setMessages(['User successfully registered']));

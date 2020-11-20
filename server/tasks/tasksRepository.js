@@ -4,10 +4,7 @@ const taskValidator = require('./taskValidator');
 
 class TasksRepository {
 	constructor() {
-		this.tasks = [
-			{id: 1, description: "Task 1", userId: 1, createdAt: 1605729605980},
-			{id: 2, description: "Task 2", userId: 2, createdAt: 1605729605980},
-		];
+		this.tasks = [];
 		this.nextId = 1;
 		this.fileName = path.join(__dirname, 'tasks.dat');
 		this.initialize();

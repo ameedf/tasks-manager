@@ -24,6 +24,7 @@ class Messages extends Component {
 		);
 	}
 }
+
 const mapStateToProps = state => {
 	return {
 		messages: state.messages.list,

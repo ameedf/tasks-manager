@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const session = require('express-session');
-const wsHandler = require('./utils/webSockets');
 const cookieParser = require('cookie-parser');
+const wsHandler = require('./utils/webSockets');
 
 const app = express()
 const server = require('http').createServer(app);

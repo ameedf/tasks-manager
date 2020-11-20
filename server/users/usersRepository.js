@@ -47,18 +47,13 @@ class UsersRepository {
 		}
 		return this.users.filter(user => user.role === role);
 	}
+
 	findByName(userName) {
-		if (!userName) {
-			return null;
-		}
 		userName = userName.trim().toLowerCase();
 		return this.findBy(user => user.name === userName, userName);
 	}
 
 	findById(userId) {
-		if (!userId) {
-			return null;
-		}
 		return this.findBy(user => user.id === userId, userId);
 	}
 
@@ -70,6 +65,7 @@ class UsersRepository {
 		return index < 0 ? null : this.users[index];
 	}
 
+	// {userName, password, role}
 	async insert(newUserData) {
 		const {userName, password, role, errors} = validator.validate(newUserData);
 		if (errors) {
