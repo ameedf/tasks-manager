@@ -7,7 +7,7 @@ class AddTask extends Component {
 	constructor(props) {
 		super(props);
 		this.descriptionInput = React.createRef();
-		this.userSelect = React.createRef();
+		this.developersSelect = React.createRef();
 	}
 
 	componentDidMount() {
@@ -23,7 +23,7 @@ class AddTask extends Component {
 			<div className="card" style={{width: "100%"}}>
 				<form className="row" onSubmit={(event => this.handleAddTask(event))}>
 					<input type="text" className="col-6" ref={this.descriptionInput} id="description" placeholder="Enter task description"/>
-					<select className="col-4" id="usersCombo" ref={this.userSelect}>
+					<select className="col-4" id="usersCombo" ref={this.developersSelect}>
 						{developers.map(developer => (
 							<option key={developer.id} value={developer.id}>{developer.name}</option>))
 						}
@@ -37,7 +37,7 @@ class AddTask extends Component {
 	handleAddTask(e) {
 		e.preventDefault();
 		const description = this.descriptionInput.current.value;
-		const userId = parseInt(this.userSelect.current.value);
+		const userId = parseInt(this.developersSelect.current.value);
 		this.props.onAddTask(description, userId);
 	}
 }
