@@ -49,7 +49,7 @@ class Menu extends Component {
 
 	handleLogout() {
 		this.props.onLogout();
-		this.setState({sendRedirect: '/'});
+		this.setState({sendRedirect: '/logout'});
 	}
 }
 

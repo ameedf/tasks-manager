@@ -1,6 +1,8 @@
+const API_PREFIX = "/api";
+
 export const post = async (url, data) => {
 	try {
-		const response = await fetch(url, {
+		const response = await fetch(API_PREFIX + url, {
 			method: 'POST',
 			headers: {
 				"Content-Type": "application/json"
@@ -15,7 +17,7 @@ export const post = async (url, data) => {
 
 export const get = async url => {
 	try {
-		const response = await fetch(url);
+		const response = await fetch(API_PREFIX + url);
 		return parseResponse(response);
 	} catch (err) {
 		return unexpectedError();

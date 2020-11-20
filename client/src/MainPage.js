@@ -7,6 +7,7 @@ import Tasks from "./components/Tasks/Tasks";
 import Login from "./components/Users/Login";
 import Register from "./components/Users/Register";
 import {connect} from "react-redux";
+import Logout from "./components/Users/Logout";
 
 class MainPage extends Component {
 	render() {
@@ -15,7 +16,7 @@ class MainPage extends Component {
 		return (
 			<div>
 				<Router>
-					{!user && !path.endsWith('/login') && !path.endsWith('/register') &&
+					{!user && !path.endsWith('/login') && !path.endsWith('/logout') && !path.endsWith('/register') &&
 					<Redirect to="/login"/>
 					}
 					<div className="App">
@@ -25,6 +26,7 @@ class MainPage extends Component {
 						<Route path="/tasks" component={Tasks}/>
 						<Route path="/login" component={Login}/>
 						<Route path="/register" component={Register}/>
+						<Route path="/logout" component={Logout}/>
 						<Route path="/" component={Home}/>
 					</Switch>
 				</Router>

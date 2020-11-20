@@ -5,6 +5,7 @@ export const TASKS_READY = 'tasks/ready';
 export const ADD_TASK = 'tasks/add';
 
 export const fetchTasks = () => async dispatch => {
+	dispatch({type: MESSAGES.DISMISS_MESSAGES});
 	try {
 		const response = await api.get('/tasks');
 		if (response.errors) {
@@ -18,6 +19,7 @@ export const fetchTasks = () => async dispatch => {
 }
 
 export const addTask = newTask => async dispatch => {
+	dispatch({type: MESSAGES.DISMISS_MESSAGES});
 	try {
 		const response = await api.post('/tasks', {newTask});
 		if (response.errors) {

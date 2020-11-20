@@ -20,8 +20,7 @@ app.use(session({
 	saveUninitialized: true
 }));
 
-app.use('/users', require('./users/usersRouter'));
-app.use('/tasks', require('./tasks/tasksRouter'));
+require('./api').initialize(app);
 
 const port = 8080;
 server.listen(port, () => console.log(`Server is running on port ${port}`))

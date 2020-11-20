@@ -6,6 +6,7 @@ export const USER_LOGGED_OUT = "users/logout";
 export const DEVELOPERS_FETCHED = "users/developers-fetched";
 
 export const login = (userName, password) => async dispatch => {
+	dispatch({type: MESSAGES.DISMISS_MESSAGES});
 	const result = await api.post("/users/login", {userName, password});
 	if (result.errors) {
 		console.log(result.errors);
@@ -16,6 +17,7 @@ export const login = (userName, password) => async dispatch => {
 }
 
 export const logout = () => async dispatch => {
+	dispatch({type: MESSAGES.DISMISS_MESSAGES});
 	const result = await api.post("/users/logout", {});
 	if (result.errors) {
 		console.log(result.errors);
@@ -26,6 +28,7 @@ export const logout = () => async dispatch => {
 }
 
 export const register = (userName, password, role) => async dispatch => {
+	dispatch({type: MESSAGES.DISMISS_MESSAGES});
 	const result = await api.post("/users/register", {userName, password, role});
 	if (result.errors) {
 		console.log(result.errors);
@@ -37,6 +40,7 @@ export const register = (userName, password, role) => async dispatch => {
 }
 
 export const fetchDevelopers = () => async dispatch => {
+	dispatch({type: MESSAGES.DISMISS_MESSAGES});
 	const result = await api.get("/users/developers");
 	if (result.errors) {
 		console.log(result.errors);
