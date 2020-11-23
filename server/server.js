@@ -20,7 +20,7 @@ app.use(session({
 	saveUninitialized: true
 }));
 
-require('./api').initialize(app);
+app.use('/api', require('./apiRouter'));
 
 const port = 8080;
 server.listen(port, () => console.log(`Server is running on port ${port}`))
