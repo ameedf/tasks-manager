@@ -1,82 +1,28 @@
-const fs = require('fs');
-const path = require('path');
 const taskValidator = require('./taskValidator');
+const dbService = require('../utils/dbService');
 
 class TasksRepository {
-	constructor() {
-		this.tasks = [];
-		this.nextId = 1;
-		this.fileName = path.join(__dirname, 'tasks.dat');
-		this.initialize();
-	}
-
-	initialize() {
-		fs.exists(this.fileName, exists => {
-			if (exists) {
-				this.fetchAll();
-			} else {
-				this.saveAllTasks();
-			}
-		})
-	}
-
-	fetchAll() {
-		fs.readFile(this.fileName, 'utf8', (err, data) => {
-			if (err) {
-				this.tasks = [];
-			} else {
-				this.tasks = JSON.parse(data);
-			}
-			if (this.tasks.length > 0) {
-				const ids = this.tasks.map(task => task.id);
-				this.nextId = Math.max(...ids) + 1;
-			} else {
-				this.nextId = 1;
-			}
-		});
-	}
 
 	findAll() {
-		return this.tasks;
+		return dbService.executeQuery("SELECT * FROM tasks");
 	}
 
 	findByUserId(userId) {
-		return this.tasks.filter(task => task.userId === userId);
+		return dbService.executeQuery("SELECT * FROM tasks WHERE userId = ?", [userId]);
 	}
 
-	findBy(predicate, predicateParam) {
-		if (!predicateParam) {
-			return null;
-		}
-		const index = this.tasks.findIndex(predicate);
-		return index < 0 ? null : this.tasks[index];
-	}
-
-	insert(task) {
-		const {userId, description, errors} = taskValidator.validate(task);
+	async insert(task) {
+		const { userId, description, errors } = taskValidator.validate(task);
 		if (errors) {
-			throw {errors};
+			throw { errors };
 		}
 		const createdAt = Date.now();
-		const newTask = {id: this.nextId++, description, userId, createdAt};
-		this.tasks.push(newTask);
-		this.saveAllTasks();
-		return newTask;
-	}
-
-	saveAllTasks() {
-		fs.writeFile(this.fileName, JSON.stringify(this.tasks), 'utf8', (err) => {
-			if (err) {
-				console.log(err);
-				throw {errors: ["A general failure occurred"]};
-			}
-		});
+		const newTask = { description, userId, createdAt };
+		const results = await dbService.executeQuery("INSERT INTO tasks SET ?", newTask);
+		const newTaskId = results.insertId;
+		return { id: newTaskId, ...newTask };
 	}
 }
 
 const REPOSITORY = new TasksRepository();
-module.exports = {
-	findAll: () => REPOSITORY.findAll(),
-	findByUserId: (userId) => REPOSITORY.findByUserId(userId),
-	insert: (task) => REPOSITORY.insert(task),
-}
+module.exports = REPOSITORY;

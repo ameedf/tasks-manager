@@ -1,102 +1,46 @@
-const fs = require('fs');
-const path = require('path');
 const bcrypt = require('bcrypt');
 const validator = require('./userValidator');
+const dbService = require('../utils/dbService');
 
 class UsersRepository {
-	constructor() {
-		this.users = [];
-		this.nextId = 1;
-		this.fileName = path.join(__dirname, 'users.dat');
-		this.initialize();
-	}
-
-	initialize() {
-		fs.exists(this.fileName, exists => {
-			if (exists) {
-				this.fetchAll();
-			} else {
-				this.saveAllUsers();
-			}
-		})
-	}
-
-	fetchAll() {
-		fs.readFile(this.fileName, 'utf8', (err, data) => {
-			if (err) {
-				this.users = [];
-			} else {
-				this.users = JSON.parse(data);
-			}
-			if (this.users.length > 0) {
-				const ids = this.users.map(u => u.id);
-				this.nextId = Math.max(...ids) + 1;
-			} else {
-				this.nextId = 1;
-			}
-		});
-	}
-
 	findAll() {
-		return this.users;
+		return dbService.executeQuery("SELECT * FROM users");
 	}
 
 	findAllByRole(role) {
 		if (!role) {
 			return [];
 		}
-		return this.users.filter(user => user.role === role);
+		return dbService.executeQuery("SELECT * FROM users WHERE role = ?", [role]);
 	}
 
-	findByName(userName) {
+	async findByName(userName) {
 		userName = userName.trim().toLowerCase();
-		return this.findBy(user => user.name === userName, userName);
+		const list = await dbService.executeQuery("SELECT * FROM users WHERE name = ?", [userName])
+		return !list || list.length === 0 ? null : list[0];
 	}
 
-	findById(userId) {
-		return this.findBy(user => user.id === userId, userId);
+	async findById(userId) {
+		const list = await dbService.executeQuery("SELECT * FROM users WHERE id = ?", [userId]);
+		return !list || list.length === 0 ? null : list[0];
 	}
 
-	findBy(predicate, predicateParam) {
-		if (!predicateParam) {
-			return null;
-		}
-		const index = this.users.findIndex(predicate);
-		return index < 0 ? null : this.users[index];
-	}
-
-	// {userName, password, role}
 	async insert(newUserData) {
-		const {userName, password, role, errors} = validator.validate(newUserData);
+		const { userName, password, role, errors } = validator.validate(newUserData);
 		if (errors) {
-			throw {errors};
+			throw { errors };
 		}
-		if (this.findByName(userName)) {
-			throw {errors: ["User already exists"]};
+		const user = await this.findByName(userName);
+		if (user) {
+			throw { errors: ["User already exists"] };
 		}
 		const hash = await bcrypt.hash(password, 10);
 		const createdAt = Date.now();
-		const newUser = {id: this.nextId++, name: userName, password: hash, role, createdAt};
-		this.users.push(newUser);
-		this.saveAllUsers();
-		return newUser;
-	}
-
-	saveAllUsers() {
-		fs.writeFile(this.fileName, JSON.stringify(this.users), 'utf8', (err) => {
-			if (err) {
-				console.log(err);
-				throw {errors: ["A general failure occurred"]};
-			}
-		});
+		const newUser = { name: userName, password: hash, role, createdAt };
+		const results = await dbService.executeQuery("INSERT INTO users SET ?", newUser);
+		return { id: results.insertId, ...newUser };
 	}
 }
 
 const REPOSITORY = new UsersRepository();
-module.exports = {
-	findAll: () => REPOSITORY.findAll(),
-	findAllByRole: (role) => REPOSITORY.findAllByRole(role),
-	findByName: (userName) => REPOSITORY.findByName(userName),
-	findById: (userId) => REPOSITORY.findById(userId),
-	insert: (newUserData) => REPOSITORY.insert(newUserData),
-}
+module.exports = REPOSITORY;
